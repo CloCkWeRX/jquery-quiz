@@ -42,12 +42,14 @@ General requirements:
 - you may also add your name or nickname
 
 - for all code or other material not created from scratch, the source must be identified, and all copyright and license information must be preserved. The following licenses are acceptable: Apache, BSD, new BSD, MIT, X11, Perl artistic, public domain, Python community, Academic Free License, w3c license, WTFPL, zlib
+	-> Check.
 
 - prior written permission is required before using code, text, sounds, images, or data with either LGPL or any "Creative Commons" license
-
+	-> Check.
 - absolutely no GPL code, text, images, sounds, or data should be included or even reviewed
-
+	-> Check.
 - absolutely no GFDL text, images, sounds, or data should be included
+	-> Check.
 -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="https://raw.github.com/freddiefujiwara/jquery-localStorage/master/jquery.localStorage.js"></script>
@@ -55,6 +57,8 @@ General requirements:
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/javascript" src="calculation.js"></script>
 <script type="text/javascript">
+"use strict";
+
 MathJax.Hub.Config({
   config: ["MMLorHTML.js"],
   jax: ["input/MathML","output/HTML-CSS","output/NativeMML"],
@@ -207,6 +211,8 @@ var Question = function(label, equation, correct_answer) {
 		return eval(math);
 	};
 };
+
+var q;
 
 q = new Question(
 	'When `a * b = 30, a = 5`, solve for `b`',

@@ -15,9 +15,21 @@ MathJax.Hub.Config({
 });
 
 var app = {
+	wait_seconds: 3,
 	questions: [],
 	position: 0,
+	start: null,
 	render: function(form) {
+		if (!app.start) {
+			return;
+		}
+
+		if (app.nextQuestionTime() > new Date()) {
+			/** @todo Pretty Pictures */
+			form.innerHTML = 'You need to wait until ' + app.nextQuestionTime() + " to continue";
+			return;
+		}
+
 		if (app.position < app.questions.length) {
 			/** @todo remove all children */
 			form.innerHTML = '';
@@ -71,6 +83,11 @@ var app = {
 
 			form.appendChild(input);
 		}
+
+		if (app.position >= app.questions.length) {
+			/** @todo make prettier */
+			form.innerHTML = "You win! All questions answered.";
+		}
 	},
 	log: function(text) {
 		if (window.console) {
@@ -78,22 +95,47 @@ var app = {
 		}
 	},
 	next: function(form) {
+		$('.question').removeClass('wrong');
+		$('.question').addClass('correct');
 		app.position++;
 		app.save();
 
 		app.render(form);
 	},
 	warn: function() {
+		$('.question').removeClass('correct');
 		$('.question').addClass('wrong');
 	},
 	save: function() {
 		$.localStorage.set("position", app.position, 5*60*1000);
+		$.localStorage.set("start", app.start, 5*60*1000);
 	},
 	load: function() {
 		var position = $.localStorage.get("position");
 		if (position) {
 			app.position = position;
 		}
+		var start = $.localStorage.get("start");
+		if (start) {
+			app.start = new Date(start);
+		}
+	},
+	nextQuestionTime: function() {
+		var wait_period = (app.wait_seconds * 1000);
+		var offset = app.position * a_minute;
+
+		return new Date(app.start.getTime() + offset);
+	},
+	init: function(form) {
+		app.start = new Date(Date.now()); 
+		app.save();
+
+		app.render(form);
+	},
+	reset: function() {
+		app.start = null;
+		app.position = 0;
+		app.save();
 	}
 };
 
@@ -135,18 +177,34 @@ q = new Question(
 
 app.questions.push(q);
 
+q = new Question(
+	'When `cow * donkey = -1; donkey + sheep = 2; sheep = 3`, solve for `cow`, `donkey`',
+	'cow * donkey == -1; sheep = 3; donkey + sheep == 2',
+	"cow = 1; donkey = -1"
+);
+
+
+app.questions.push(q);
+
 </script>
 <style type="text/css">
 .wrong {
 	border: 1px solid red;
 	color: red;
 }
+
+.wrong {
+	border: 1px solid green;
+	color: green;
+}
 </style>
 </head>
 <body>
 	<h1>JQuery quiz</h1>
 	<p>Note, answers are in <a href="http://www1.chapman.edu/~jipsen/mathml/asciimath.html">AsciiMath</a>.</p>
-	<form id="questions"></form>
+	<form id="questions">
+		<a href="#questions" onclick="app.init($('#questions')[0]); return false">Ready?</a>
+	</form>
 <script type="text/javascript">
 try {
 	app.load();
@@ -154,7 +212,10 @@ try {
 	app.log(e);
 }
 app.render($('#questions')[0]);
-MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+
+/** @todo Fix rendering ? */
+//MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 </script>
 </body>
 </html>

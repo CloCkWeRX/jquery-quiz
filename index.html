@@ -15,7 +15,7 @@ MathJax.Hub.Config({
 });
 
 var app = {
-	wait_seconds: 3,
+	wait_seconds: 15,
 	questions: [],
 	position: 0,
 	start: null,
@@ -26,7 +26,7 @@ var app = {
 
 		if (app.nextQuestionTime() > new Date()) {
 			/** @todo Pretty Pictures */
-			form.innerHTML = 'You need to wait until ' + app.nextQuestionTime() + " to continue";
+			form.innerHTML = 'You need to wait until<br />' + app.nextQuestionTime() + " to continue<br />" + new Date() + " is the current time";
 			return;
 		}
 
@@ -96,7 +96,7 @@ var app = {
 	},
 	next: function(form) {
 		$('.question').removeClass('wrong');
-		$('.question').addClass('correct');
+
 		app.position++;
 		app.save();
 
@@ -205,17 +205,18 @@ app.questions.push(q);
 	<form id="questions">
 		<a href="#questions" onclick="app.init($('#questions')[0]); return false">Ready?</a>
 	</form>
-<script type="text/javascript">
-try {
-	app.load();
-} catch (e) {
-	app.log(e);
-}
-app.render($('#questions')[0]);
+	<p><a href="#" onclick="app.reset(); window.location.reload();">Start over</a></p>
+	<script type="text/javascript">
+	try {
+		app.load();
+	} catch (e) {
+		app.log(e);
+	}
+	app.render($('#questions')[0]);
 
 
-/** @todo Fix rendering ? */
-//MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-</script>
+	/** @todo Fix rendering ? */
+	//MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	</script>
 </body>
 </html>

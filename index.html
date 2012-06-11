@@ -3,61 +3,104 @@
 <head>
 <title>JQuery quiz</title>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-
+<script type="text/javascript" src="https://raw.github.com/freddiefujiwara/jquery-localStorage/master/jquery.localStorage.js"></script>
+<!-- TODO confirm permission to use, under apache license -->
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="calculation.js"></script>
 <script type="text/javascript">
+MathJax.Hub.Config({
+  config: ["MMLorHTML.js"],
+  jax: ["input/MathML","output/HTML-CSS","output/NativeMML"],
+  extensions: ["mml2jax.js","MathMenu.js","MathZoom.js"]
+});
+
 var app = {
 	questions: [],
-	render: function(output) {
-		var q;
-		var h4;
-		var radio;
-		var label;
+	render: function(form) {
+		var q, h4, input, submit;
 
 		for (var i in app.questions) {
 			q = app.questions[i];
 
 			h4 = document.createElement('h4');
-			h4.appendChild(document.createTextNode(q.question));
+			h4.appendChild(document.createTextNode(q.label));
 
-			output.appendChild(h4);
+			form.appendChild(h4);
 
-			for (var n in q.answers) {
-				radio = document.createElement("input");
-				radio.type = 'radio';
-				radio.value = n;
-				radio.name = 'question[' + i + ']';
+			input = document.createElement("textarea");
+			input.name = 'question[' + i + ']';
+			input.required = "required";
 
-                          	label = document.createElement("label");
-				label.appendChild(radio);
-				label.appendChild(
-					document.createTextNode(q.answers[n])
-				);
+			submit = document.createElement("input");
+			submit.type = 'submit';
+			submit.onclick = function() { 
+				try {
+					if (input.value == '') {
+						throw "No input";
+					}
 
-				output.appendChild(label);
-			}
+					var yours = input.value + "; " + q.equation;
+					var mine = q.correct_answer + "; " + q.equation;
+
+					app.log("Does `" + yours + "` equal `" + mine + "` ?");
+					app.log(q.solve(yours) === q.solve(mine));
+				} catch (e) {
+					app.log(e);
+				}
+		
+
+				return false;
+			};
+
+			form.appendChild(input);
+			form.appendChild(submit);
+		}
+	},
+	log: function(text) {
+		if (window.console) {
+			console.log(text)
 		}
 	}
 };
 
-var question = {
-        question: "",
-	answers: [],
-	correct_answer: null
+var Question = function(label, equation, correct_answer) {
+	this.log = function(text) {
+		if (window.console) {
+			console.log(text)
+		}
+	};
+
+	this.label = label;
+	this.equation = equation;
+	this.correct_answer = correct_answer;
+
+	this.solve = function(input_equation) {
+		var math = mathjs(input_equation);
+		var result = eval(math);
+
+		this.log(input_equation + " translates to " + math);
+		this.log(math + " evaluates to " + result);
+
+		return eval(math);
+	};
 };
 
-question.question = "What is the capital of Answerville?";
-question.answers = ["Fish", "Dogs", "Cats"]
-question.correct_answer = "Fish";
+q = new Question(
+	'When `a * b = 30, a = 5`, solve for `b`',
+	'a = 5; a * b == 30;',
+	"b = 6"
+);
 
-app.questions.push(question);
-
+app.questions.push(q);
 </script>
 </head>
 <body>
 	<h1>JQuery quiz</h1>
-	<div id="questions"></div>
+	<p>Note, answers are in <a href="http://www1.chapman.edu/~jipsen/mathml/asciimath.html">AsciiMath</a>.</p>
+	<form id="questions"></form>
 <script type="text/javascript">
 app.render($('#questions')[0]);
+MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 </script>
 </body>
 </html>

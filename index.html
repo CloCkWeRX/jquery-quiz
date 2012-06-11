@@ -3,6 +3,44 @@
 <head>
 <title>JQuery quiz</title>
 <!--
+
+Sourcing Type: Outsourcing
+Brief summary: 
+task: ask a math question (e.g. 5 x 6), check the answer, and schedule a date to ask again. Uses a very simple 'spaced repetition' ('graduated interval recall') algorithm: double the previous interval.
+
+May use jQuery; may NOT use any other library without prior written permission. (Yes, I know there are lots of other good ones out there.)
+
+May use CoffeeScript or PyvaScript.
+
+Spec:
+- checkboxes for addition, subtraction, multiplication, division ... treat none-checked as equivalent to all-checked
+	-> Clarity needed! This doesn't gel with the example question.
+- textbox for maximum value (e.g. '6' would allow every combination of 1-6); accept Enter/Return keys too
+	-> Clarity needed! This doesn't gel with the example question.
+- 'Start' button
+	-> Check
+
+during a test:
+- if there are any 'scheduled' questions for today (or earlier): ask
+	-> Check
+- else if there are unasked questions: ask a random unasked question (in large text)
+	-> 0%
+- else tell the user that all questions meeting the conditions have been scheduled
+	-> 50% - placeholder for error message re when they need to wait until.
+- textbox for typing the answer
+	-> Check
+- 'Check' button for verifying; accept Enter/Return keys too
+	-> 50% - onchange magically makes it work.
+
+check the answer and save:
+- if correct, add a timestamp to the 'correct' list, compute the next scheduled date as double the previous interval (in days), save to localStorage using the question as the key. If the 'previous' interval is zero, schedule for the next day.
+	-> 50%. Not in the same technique exactly.
+
+- if wrong, add a timestamp to the 'wrong' list and keep it scheduled for today, placing it in a new list to review after previously-scheduled questions, save to localStorage. If the user got the question right in the past, store that data but reset the interval to 0 so that a correct answer will start over (1, 2, 4, 8 etc. days.)
+	-> Wrong.
+
+Be sure to read about validation, below.
+
 PLATFORM: MUST run on Windows and Mac; Chrome, Firefox (I have 11) and Safari (I have 5.1.7 on Mac OS X 10.6.8 Snow Leopard). MSIE, Opera, mobile browsers and Linux would be nice. (It's fine if you don't have a Mac as long as you understand cross-platform and cross-browser issues.)
 
 	-> Chrome, tested.
@@ -17,6 +55,7 @@ Notes:
 	-> Check.
 
 - JavaScript (except for approved external libraries like jQuery) must pass both http://www.javascriptlint.com/online_lint.php and http://www.jslint.com/ (with default settings: nothing checked). Include "strict mode" in the code, and a comment such as /* global $,document,window */ though adapted for this code. If you read this far, include "yes, I will validate the code!".
+	-> Check. Except where the lint is silly versus coding style.
 
 - Either a table-based or div-based layout is acceptable. (I find the former to be easier and more robust, but I understand why some prefer the latter.)
 	-> Check
@@ -28,10 +67,13 @@ Notes:
 Deliverables:
 
 - working code with useful comments
+	-> Self documenting code, woo.
 
 - a README file with any useful notes on installation or customization
+	-> Check.
 
 - all deliverables will be considered a "work made for hire" under U.S. Copyright law. Contractor assigns to buyer exclusive and complete copyrights to all work. If such a transfer is not considered valid in certain jurisdictions or circumstances, contractor assigns exclusive, perpetual, transferrable, fully-paid, non-revokable, worldwide rights to buyer.
+	-> Todo, check. At worst, will BSD / Apache licence it.
 
 
 -----

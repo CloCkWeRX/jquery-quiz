@@ -16,50 +16,73 @@ MathJax.Hub.Config({
 
 var app = {
 	questions: [],
+	position: 0,
 	render: function(form) {
-		var q, h4, input, submit;
+		if (app.position < app.questions.length) {
+			/** @todo remove all children */
+			form.innerHTML = '';
 
-		for (var i in app.questions) {
-			q = app.questions[i];
+			var q, h4, input, p;
 
-			h4 = document.createElement('h4');
+			q = app.questions[app.position];
+
+			h4 = document.createElement('h3');
 			h4.appendChild(document.createTextNode(q.label));
 
+			p = document.createElement('h2');
+			p.appendChild(
+				document.createTextNode(
+					"Question " + (app.position+1) + " of " +app.questions.length
+				)
+			);
+
+			form.appendChild(p);
 			form.appendChild(h4);
 
+
 			input = document.createElement("textarea");
-			input.name = 'question[' + i + ']';
+			input.className = 'question';
+			input.id = 'question[' + app.position + ']';
+			input.name = 'question[' + app.position + ']';
 			input.required = "required";
 
-			submit = document.createElement("input");
-			submit.type = 'submit';
-			submit.onclick = function() { 
+			input.onchange = function() { 
 				try {
-					if (input.value == '') {
+					if (this.value == '') {
 						throw "No input";
 					}
 
-					var yours = input.value + "; " + q.equation;
+					var yours = this.value + "; " + q.equation;
 					var mine = q.correct_answer + "; " + q.equation;
 
 					app.log("Does `" + yours + "` equal `" + mine + "` ?");
-					app.log(q.solve(yours) === q.solve(mine));
+					if (q.solve(yours) === q.solve(mine)) {
+						app.log("Correct answer");
+						app.next(form);
+					} else {
+						app.log("Incorrect answer");
+						app.warn();
+					}
 				} catch (e) {
 					app.log(e);
+					app.warn();
 				}
-		
-
-				return false;
 			};
 
 			form.appendChild(input);
-			form.appendChild(submit);
 		}
 	},
 	log: function(text) {
 		if (window.console) {
 			console.log(text)
 		}
+	},
+	next: function(form) {
+		app.position++;
+		app.render(form);
+	},
+	warn: function() {
+		$('.question').addClass('wrong');
 	}
 };
 
@@ -92,7 +115,22 @@ q = new Question(
 );
 
 app.questions.push(q);
+
+q = new Question(
+	'When `a * b = 30, a = 6`, solve for `b`',
+	'a = 6; a * b == 30;',
+	"b = 5"
+);
+
+app.questions.push(q);
+
 </script>
+<style type="text/css">
+.wrong {
+	border: 1px solid red;
+	color: red;
+}
+</style>
 </head>
 <body>
 	<h1>JQuery quiz</h1>

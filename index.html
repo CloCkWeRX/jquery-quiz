@@ -79,10 +79,21 @@ var app = {
 	},
 	next: function(form) {
 		app.position++;
+		app.save();
+
 		app.render(form);
 	},
 	warn: function() {
 		$('.question').addClass('wrong');
+	},
+	save: function() {
+		$.localStorage.set("position", app.position, 5*60*1000);
+	},
+	load: function() {
+		var position = $.localStorage.get("position");
+		if (position) {
+			app.position = position;
+		}
 	}
 };
 
@@ -137,6 +148,11 @@ app.questions.push(q);
 	<p>Note, answers are in <a href="http://www1.chapman.edu/~jipsen/mathml/asciimath.html">AsciiMath</a>.</p>
 	<form id="questions"></form>
 <script type="text/javascript">
+try {
+	app.load();
+} catch (e) {
+	app.log(e);
+}
 app.render($('#questions')[0]);
 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 </script>

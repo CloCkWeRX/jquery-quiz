@@ -2,6 +2,51 @@
 <html>
 <head>
 <title>JQuery quiz</title>
+<!--
+PLATFORM: MUST run on Windows and Mac; Chrome, Firefox (I have 11) and Safari (I have 5.1.7 on Mac OS X 10.6.8 Snow Leopard). MSIE, Opera, mobile browsers and Linux would be nice. (It's fine if you don't have a Mac as long as you understand cross-platform and cross-browser issues.)
+
+	-> Chrome, tested.
+
+-----
+Notes:
+
+- HTML must validate to HTML5; exceptions require written permission.
+	-> Check.
+
+- Style information should be specified using CSS, which must also validate -- except for clearly identified CSS3 or browser-specific extensions.
+	-> Check.
+
+- JavaScript (except for approved external libraries like jQuery) must pass both http://www.javascriptlint.com/online_lint.php and http://www.jslint.com/ (with default settings: nothing checked). Include "strict mode" in the code, and a comment such as /* global $,document,window */ though adapted for this code. If you read this far, include "yes, I will validate the code!".
+
+- Either a table-based or div-based layout is acceptable. (I find the former to be easier and more robust, but I understand why some prefer the latter.)
+
+- all code and other files must support UTF8
+
+-----
+Deliverables:
+
+- working code with useful comments
+
+- a README file with any useful notes on installation or customization
+
+- all deliverables will be considered a "work made for hire" under U.S. Copyright law. Contractor assigns to buyer exclusive and complete copyrights to all work. If such a transfer is not considered valid in certain jurisdictions or circumstances, contractor assigns exclusive, perpetual, transferrable, fully-paid, non-revokable, worldwide rights to buyer.
+
+
+-----
+General requirements:
+
+- every new file must contain "Copyright 2012 by PreFab Software, Inc." Every modified file should contain that text preceded by "Changes are ".
+
+- you may also add your name or nickname
+
+- for all code or other material not created from scratch, the source must be identified, and all copyright and license information must be preserved. The following licenses are acceptable: Apache, BSD, new BSD, MIT, X11, Perl artistic, public domain, Python community, Academic Free License, w3c license, WTFPL, zlib
+
+- prior written permission is required before using code, text, sounds, images, or data with either LGPL or any "Creative Commons" license
+
+- absolutely no GPL code, text, images, sounds, or data should be included or even reviewed
+
+- absolutely no GFDL text, images, sounds, or data should be included
+-->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="https://raw.github.com/freddiefujiwara/jquery-localStorage/master/jquery.localStorage.js"></script>
 <!-- TODO confirm permission to use, under apache license -->
@@ -60,7 +105,7 @@ var app = {
 
 			input.onchange = function() { 
 				try {
-					if (this.value == '') {
+					if (this.value === '') {
 						throw "No input";
 					}
 
@@ -91,7 +136,7 @@ var app = {
 	},
 	log: function(text) {
 		if (window.console) {
-			console.log(text)
+			console.log(text);
 		}
 	},
 	next: function(form) {
